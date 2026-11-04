@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://qconsulting.ca/fo3/ModConfig5.0.xsd">
+  <moduleName>Sovngarde Font Plus</moduleName>
+  <moduleImage path=""/>
+  <installSteps order="Explicit">
+    <installStep name="Install">
+      <!-- The wizard must yield at least one <plugin>: an empty
+           <optionalFileGroups/> makes Amethyst's FOMOD wizard resolve
+           `selected_plugin or first_plugin` to None and die with AttributeError
+           on .description. The payload is copied by the unconditional patterns
+           below either way; there is nothing to choose. -->
+      <optionalFileGroups>
+        <group name="Options" type="SelectAny">
+          <plugins>
+            <plugin name="Sovngarde Font Plus">
+              <description>Replaces the two Scaleform movies the Sovngarde mod installs (Interface/fonts_sovngarde.swf and Interface/fonts_sovngardeconsole.swf) with versions carrying 21 additional symbols. Every existing glyph is byte-identical to the mod's. Install it over Sovngarde - Mist's Font Replacer.</description>
+              <image path=""/>
+              <typeDescriptor><type name="Recommended"/></typeDescriptor>
+            </plugin>
+          </plugins>
+        </group>
+      </optionalFileGroups>
+      <patterns>
+        <pattern name="fonts">
+          <sourceFiles><source name="Interface"/></sourceFiles>
+          <destination><destination path=""/></destination>
+        </pattern>
+      </patterns>
+    </installStep>
+  </installSteps>
+</config>

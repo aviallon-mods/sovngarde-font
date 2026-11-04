@@ -1,0 +1,41 @@
+# Second spec of the same repo (tools/package_fomod.py takes --spec several
+# times): the "Desktop Edition" - the same four faces as the upstream mod, for
+# use outside the game. It is a plain zip, not a FOMOD: there is nothing to
+# choose and no game to install it into (`fomod = false` skips the
+# ModuleConfig checks, which would otherwise demand a fomod/ directory).
+
+name = "SovngardeFontPlus-Desktop"
+zip_name = "SovngardeFontPlus-{version}-desktop.zip"
+# Single source of truth for the version (the same VERSION file the FOMOD spec
+# reads); never duplicated as a literal here.
+version = { file = "VERSION" }
+game_name = "skyrimspecialedition"
+author = "aviallon"
+description = "The Sovngarde Desktop Edition (Bold, Light and their Inverted Brackets variants) with the usual missing UTF-8 symbols added: em dash, en dash, ellipsis, bullet, minus, multiplication sign, superscripts, trademark, copyright, registered, single guillemets, daggers, not-equal and comparisons."
+nexus_name = "Sovngarde Font Plus"
+nexus_url = "https://github.com/aviallon-mods/sovngarde-font"
+file_category = "OPTIONAL"
+requirements = [
+  "386:Sovngarde - Mist's Font Replacer",
+]
+fomod = false
+
+[[files]]
+src = "dist/desktop/Sovngarde/Sovngarde Bold.ttf"
+dest = "Sovngarde/Sovngarde Bold.ttf"
+
+[[files]]
+src = "dist/desktop/Sovngarde/Sovngarde Light.ttf"
+dest = "Sovngarde/Sovngarde Light.ttf"
+
+[[files]]
+src = "dist/desktop/Sovngarde Inverted Brackets/Sovngarde Bold Inverted Brackets.ttf"
+dest = "Sovngarde Inverted Brackets/Sovngarde Bold Inverted Brackets.ttf"
+
+[[files]]
+src = "dist/desktop/Sovngarde Inverted Brackets/Sovngarde Light Inverted Brackets.ttf"
+dest = "Sovngarde Inverted Brackets/Sovngarde Light Inverted Brackets.ttf"
+
+[[files]]
+src = "LICENSE-OFL.txt"
+dest = "Sovngarde OFL License.txt"

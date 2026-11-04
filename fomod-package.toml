@@ -1,0 +1,44 @@
+# FOMOD package spec for aviallon-mods/modforge's tools/package_fomod.py
+# (schema: that file's docstring). CI's shared pipeline
+# (aviallon-mods/modforge/.github/workflows/build-fomod.yml@main) assembles AND
+# verifies the zip from this list; nothing else may appear in the archive.
+#
+# The payload is the two Scaleform movies the game renders, at the path the mod
+# manager installs them to (no Data/ wrapper, no parent directory), plus the
+# font license - and deliberately NOT Interface/fontconfig.txt, which is
+# identical to the base mod's and belongs to it: installing a second copy would
+# show up as a pointless file conflict in the mod manager. The base mod is
+# declared as a requirement instead.
+
+name = "SovngardeFontPlus"
+zip_name = "SovngardeFontPlus-{version}-fomod.zip"
+# Single source of truth for the version; never duplicated as a literal here.
+version = { file = "VERSION" }
+game_name = "skyrimspecialedition"
+author = "aviallon"
+description = "Adds the usual missing UTF-8 symbols to the Sovngarde interface font (em dash, en dash, ellipsis, bullet, minus, multiplication sign, superscripts, trademark, copyright, registered, single guillemets, daggers, not-equal and comparisons) in both the game's Scaleform movies, without altering a single existing glyph."
+nexus_name = "Sovngarde Font Plus"
+nexus_url = "https://github.com/aviallon-mods/sovngarde-font"
+file_category = "MAIN"
+# The font this patches: both movies are the base mod's files with glyphs added.
+requirements = [
+  "386:Sovngarde - Mist's Font Replacer",
+]
+fomod = true
+
+[[files]]
+src = "fomod/ModuleConfig.xml"
+dest = "fomod/ModuleConfig.xml"
+
+[[files]]
+src = "dist/mod/Data/Interface/fonts_sovngarde.swf"
+dest = "Interface/fonts_sovngarde.swf"
+
+[[files]]
+src = "dist/mod/Data/Interface/fonts_sovngardeconsole.swf"
+dest = "Interface/fonts_sovngardeconsole.swf"
+
+[[files]]
+# The SIL Open Font License the fonts are under, which has to travel with them.
+src = "LICENSE-OFL.txt"
+dest = "Sovngarde OFL License.txt"
