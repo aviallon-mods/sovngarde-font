@@ -1,0 +1,57 @@
+name: build
+
+# Sovngarde Font Plus: adds the usual missing UTF-8 symbols (em dash, ellipsis,
+# bullet, superscripts, ...) to the Sovngarde interface font, in the game's
+# Scaleform movies and in the desktop TrueType faces.
+#
+# The whole build is this repo's: a Nix dev shell (python + fontTools +
+# FontForge), then a Python pipeline that decodes the movies the mod ships,
+# adds the glyphs and re-emits them. Everything from the build onwards -- the
+# two zips assembled from fomod-package*.toml, the mutation-tested verify gate,
+# the artifacts and the release attach -- belongs to the shared pipeline
+# aviallon-mods/modforge/.github/workflows/build-fomod.yml@main.
+#
+# The build command runs the same gate the repository asks for locally (ruff,
+# mypy --strict, the test suite) before producing the artifacts, so a green CI
+# cannot come from code the local hook would have refused. The fonts themselves
+# are verified twice: by the test suite (byte-exact glyph round trips, every
+# glyph checked against the movie's own bounds table) and by the shared gate
+# (each payload entry byte-identical to its build input).
+#
+# No cache step: the build is not compiled, it decodes ~500 KB of movies and
+# writes ~700 KB of fonts, and the dev shell comes from the Nix store already.
+
+on:
+  push:
+    branches: ["**"]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  package:
+    name: package + verify + release
+    permissions:
+      contents: write
+    uses: aviallon-mods/modforge/.github/workflows/build-fomod.yml@main
+    with:
+      mod_name: SovngardeFontPlus
+      package_specs: |
+        fomod-package.toml
+        fomod-package-desktop.toml
+      submodules: false
+      install_nix: true
+      runs_on: ubuntu-latest
+      build_shell: bash
+      # SOURCE_DATE_EPOCH is set by the Nix shell, which is what makes the
+      # desktop TTFs reproducible (fontTools would otherwise stamp
+      # head.modified with the current time).
+      build_command: |
+        set -euo pipefail
+        nix develop -c bash -euo pipefail -c '
+          ruff check .
+          ruff format --check .
+          mypy
+          python -m pytest tests -q
+          python -m sovngarde.build
+        '
