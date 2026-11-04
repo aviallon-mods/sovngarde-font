@@ -16,7 +16,9 @@ name: build
 # cannot come from code the local hook would have refused. The fonts themselves
 # are verified twice: by the test suite (byte-exact glyph round trips, every
 # glyph checked against the movie's own bounds table) and by the shared gate
-# (each payload entry byte-identical to its build input).
+# (each payload entry byte-identical to its build input). The README/FOMOD
+# preview is regenerated here and compared with the committed copy, so a picture
+# that no longer matches the fonts fails the run instead of shipping.
 #
 # No cache step: the build is not compiled, it decodes ~500 KB of movies and
 # writes ~700 KB of fonts, and the dev shell comes from the Nix store already.
@@ -54,4 +56,6 @@ jobs:
           mypy
           python -m pytest tests -q
           python -m sovngarde.build
+          python tools/preview.py --comparison fomod/preview.png
+          git diff --exit-code -- fomod/preview.png
         '

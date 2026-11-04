@@ -119,6 +119,26 @@ def test_building_twice_is_idempotent(artifacts: Artifacts, upstream: Path, tmp_
             assert path.read_bytes() == other.read_bytes(), path.name
 
 
+def test_fomod_preview_is_packaged_and_referenced() -> None:
+    """The wizard's image must be inside the zip: the shared gate cannot see it.
+
+    moduleImage and the plugin's <image> are read by the installer from the
+    archive, so a path that is not in the spec's file list means a wizard with a
+    broken picture - exactly what a hand-written ModuleConfig gets wrong.
+    """
+    data = tomllib.loads((ROOT / "fomod-package.toml").read_text())
+    packaged = {entry["dest"] for entry in data["files"]}
+    tree = ET.parse(ROOT / "fomod" / "ModuleConfig.xml")
+    images = [node.get("path") for node in tree.findall(".//moduleImage")]
+    images += [node.get("path") for node in tree.findall(".//plugin//image")]
+    assert images, "the wizard references no preview image"
+    assert len(images) == 2, images  # the module banner and the option's image
+    for path in images:
+        assert path, "an empty image path renders nothing"
+        assert path in packaged, f"{path!r} is referenced but not packaged"
+        assert (ROOT / path).is_file(), f"{path!r} is packaged but missing on disk"
+
+
 def test_add_refuses_to_overwrite_an_existing_glyph(upstream: Path) -> None:
     target = TtfTarget.load(str(upstream / "desktop" / "Sovngarde" / "Sovngarde Bold.ttf"), "bold")
     with pytest.raises(ValueError, match="already exists"):

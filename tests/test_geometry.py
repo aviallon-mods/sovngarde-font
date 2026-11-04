@@ -22,31 +22,41 @@ from sovngarde.geometry import (
     rasterize,
     to_ttf,
 )
+from sovngarde.swf import Movie
 from sovngarde.targets import SwfTarget, TtfTarget, measure_scale
-
-#: measured once from the shipped UI movie against the desktop design
-UI_EM = 20.4824 * 1000
 
 
 @pytest.fixture(scope="module")
-def targets(upstream: Path) -> tuple[SwfTarget, TtfTarget]:
+def ui_em(upstream: Path) -> float:
+    """The em size of the UI movie, measured from the desktop design (no magic
+    number: a hardcoded one would silently stop matching a future mod version)."""
+    movie = Movie.load(
+        (upstream / "mod" / "Data" / "Interface" / "fonts_sovngarde.swf").read_bytes()
+    )
+    reference = TTFont(str(upstream / "desktop" / "Sovngarde" / "Sovngarde Bold.ttf"))
+    scale = measure_scale(movie.fonts()[0][1], reference)
+    return scale * int(reference["head"].unitsPerEm)
+
+
+@pytest.fixture(scope="module")
+def targets(upstream: Path, ui_em: float) -> tuple[SwfTarget, TtfTarget]:
     swf = SwfTarget.load(
-        str(upstream / "mod" / "Data" / "Interface" / "fonts_sovngarde.swf"), "ui", UI_EM
+        str(upstream / "mod" / "Data" / "Interface" / "fonts_sovngarde.swf"), "ui", ui_em
     )
     ttf = TtfTarget.load(str(upstream / "desktop" / "Sovngarde" / "Sovngarde Bold.ttf"), "bold")
     return swf, ttf
 
 
-def test_measure_scale_is_uniform(upstream: Path) -> None:
+def test_measure_scale_is_uniform(upstream: Path, ui_em: float) -> None:
     movie = SwfTarget.load(
-        str(upstream / "mod" / "Data" / "Interface" / "fonts_sovngarde.swf"), "ui", UI_EM
+        str(upstream / "mod" / "Data" / "Interface" / "fonts_sovngarde.swf"), "ui", ui_em
     )
     reference = TTFont(str(upstream / "desktop" / "Sovngarde" / "Sovngarde Bold.ttf"))
     scale = measure_scale(movie.font, reference)
     assert 20.4 < scale < 20.6, scale
 
 
-def test_measure_scale_refuses_a_mismatched_pair(upstream: Path) -> None:
+def test_measure_scale_refuses_a_mismatched_pair(upstream: Path, ui_em: float) -> None:
     """The guard must actually fire: break the reference and watch it refuse.
 
     This is the mutation test for the scale guard - without it, a wrong
@@ -54,7 +64,7 @@ def test_measure_scale_refuses_a_mismatched_pair(upstream: Path) -> None:
     placed at the wrong size.
     """
     movie = SwfTarget.load(
-        str(upstream / "mod" / "Data" / "Interface" / "fonts_sovngarde.swf"), "ui", UI_EM
+        str(upstream / "mod" / "Data" / "Interface" / "fonts_sovngarde.swf"), "ui", ui_em
     )
     reference = TTFont(str(upstream / "desktop" / "Sovngarde" / "Sovngarde Bold.ttf"))
     for i, name in enumerate(reference.getGlyphOrder()):
@@ -151,10 +161,10 @@ def test_flattened_curves_stay_inside_the_control_hull(
     assert hull[1] <= flat[1] <= flat[3] <= hull[3]
 
 
-def test_from_swf_reads_absolute_moves(upstream: Path) -> None:
+def test_from_swf_reads_absolute_moves(upstream: Path, ui_em: float) -> None:
     """Regression: a contour's move is an absolute position, not a delta."""
     movie = SwfTarget.load(
-        str(upstream / "mod" / "Data" / "Interface" / "fonts_sovngarde.swf"), "ui", UI_EM
+        str(upstream / "mod" / "Data" / "Interface" / "fonts_sovngarde.swf"), "ui", ui_em
     )
     for codepoint in (0x25, 0x41, 0x21, 0x6D):
         index = movie.font.glyph_by_code(codepoint)

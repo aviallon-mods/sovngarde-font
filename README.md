@@ -22,7 +22,7 @@ That is what this fixes.
 `±` (U+00B1) and `÷` (U+00F7) are already in the font and are left alone; the
 Light faces already carry `−` U+2212, so they gain 20 of the 21.
 
-![before and after](docs/before-after.png)
+![before and after](fomod/preview.png)
 
 Top: the shipped movie — the dashes, the ellipsis and the second line's symbols
 render as nothing. Bottom: this build. (Rendered from the movies themselves with
@@ -96,6 +96,7 @@ python -m pytest tests -q         # 55 tests: codec, geometry, added glyphs, bui
 ruff check . && ruff format --check . && mypy
 python tools/coverage.py          # coverage report (docs/coverage.md)
 python tools/preview.py --ttf dist/desktop/Sovngarde/'Sovngarde Bold.ttf' --freetype
+python tools/preview.py --comparison fomod/preview.png   # the README/FOMOD picture
 ```
 
 CI runs exactly those commands and then the shared

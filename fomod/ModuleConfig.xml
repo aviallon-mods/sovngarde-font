@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://qconsulting.ca/fo3/ModConfig5.0.xsd">
   <moduleName>Sovngarde Font Plus</moduleName>
-  <moduleImage path=""/>
+  <moduleImage path="fomod/preview.png"/>
   <installSteps order="Explicit">
     <installStep name="Install">
       <!-- The wizard must yield at least one <plugin>: an empty
@@ -13,8 +13,8 @@
         <group name="Options" type="SelectAny">
           <plugins>
             <plugin name="Sovngarde Font Plus">
-              <description>Replaces the two Scaleform movies the Sovngarde mod installs (Interface/fonts_sovngarde.swf and Interface/fonts_sovngardeconsole.swf) with versions carrying 21 additional symbols. Every existing glyph is byte-identical to the mod's. Install it over Sovngarde - Mist's Font Replacer.</description>
-              <image path=""/>
+              <description>Replaces the two Scaleform movies the Sovngarde mod installs (Interface/fonts_sovngarde.swf and Interface/fonts_sovngardeconsole.swf) with versions carrying 21 additional symbols. Every existing glyph is byte-identical to the mod's. Install it over Sovngarde - Mist's Font Replacer: the picture shows the mod as shipped (top) and with this patch (bottom).</description>
+              <image path="fomod/preview.png"/>
               <typeDescriptor><type name="Recommended"/></typeDescriptor>
             </plugin>
           </plugins>
