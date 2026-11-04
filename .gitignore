@@ -1,0 +1,18 @@
+# build outputs (the packager takes its payload from here)
+dist/
+work/
+result
+result-*
+
+# python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+.venv/
+
+# the FontForge sources of the upstream mod are not vendored: only the fonts
+# the build reads are (see upstream/ and docs/coverage.md)
+upstream/desktop/*.sfd
