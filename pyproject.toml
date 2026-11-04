@@ -19,6 +19,9 @@ packages = ["src/sovngarde"]
 line-length = 100
 target-version = "py311"
 src = ["src", "tests", "tools"]
+# the shared modforge pipeline checks its own tooling out into _modforge/ inside
+# this workspace: it is not this repository's code and is not linted here
+extend-exclude = ["_modforge"]
 
 [tool.ruff.lint]
 select = [

@@ -4,6 +4,9 @@ work/
 result
 result-*
 
+# the shared CI pipeline checks the modforge tooling out here
+_modforge/
+
 # python
 __pycache__/
 *.py[cod]
