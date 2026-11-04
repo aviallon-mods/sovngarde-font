@@ -1,0 +1,61 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "sovngarde-font"
+version = "0.1.0"
+description = "Extend the Sovngarde Skyrim font with the usual missing UTF-8 symbols"
+requires-python = ">=3.11"
+dependencies = ["fonttools>=4.40"]
+
+[project.scripts]
+sovngarde-build = "sovngarde.build:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/sovngarde"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests", "tools"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle
+    "F",   # pyflakes
+    "W",   # pycodestyle warnings
+    "I",   # isort
+    "N",   # pep8-naming
+    "UP",  # pyupgrade
+    "B",   # bugbear
+    "C4",  # comprehensions
+    "RET", # return
+    "SIM", # simplify
+    "PTH", # pathlib
+    "RUF", # ruff-specific
+]
+# this project is *about* typographic characters: a dash in a preview sample is
+# the subject, not a confusable identifier
+ignore = ["RUF001", "RUF002", "RUF003"]
+
+
+
+[tool.ruff.lint.per-file-ignores]
+"tools/*" = ["E402"]  # the tools put src/ on sys.path before importing the package
+
+[tool.ruff.lint.flake8-pytest-style]
+fixture-parentheses = false
+
+[tool.mypy]
+strict = true
+files = ["src", "tests", "tools"]
+mypy_path = "src"
+
+[[tool.mypy.overrides]]
+module = ["fontTools.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
